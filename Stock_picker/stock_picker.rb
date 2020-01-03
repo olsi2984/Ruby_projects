@@ -20,8 +20,12 @@ def stock_picker (stocks)
         end        
         
     end
-    
-    puts "You should buy on day #{buy_day} and sell on day #{sell_day}, the profit will be #{max_profit}"
+
+    if max_profit === 0
+        puts "You should not invest, your profit will be 0."
+    else
+        puts "You should buy on day #{buy_day} and sell on day #{sell_day}, the profit will be #{max_profit}."
+    end
     
 end
 
