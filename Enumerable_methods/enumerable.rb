@@ -68,26 +68,48 @@ module Enumerable
             return self.length
         end
     end
-    def my_map
+    def my_map pr = nil
         map_arr = []
         self.my_each do |n|
-            map_arr.push yield(n)
+            unless block_given?
+                map_arr.push pr.call(n)
+            else
+                map_arr.push yield(n)
+            end
         end
         return map_arr
     end
-    def my_inject
+    def my_inject init = nil
         
+        if init
+            store_mem = init
+            i = 0
+        else
+            store_mem = self.first
+            i = 1
+        end
+        while i < self.length
+            store_mem = yield(store_mem , self[i])
+            i+=1
+        end
+        
+        store_mem
     end
     
 end
+def multiply_els(elements)        
+    result = elements.my_inject(1){|result, el| result * el}        
+    puts result
+end
 
-res1 = [1,2,3,4,7].my_map{ |x| x%2==0 }
-res2 = [1,2,5,6,2].my_map{|k| k*2}
-res3 = ["ant", "bear", "cat"].my_map{|l| l = l + "y"}
+res1 = [1,2,3,4,7].my_inject{ |result, el| result + el }
+res2 = [1,2,5,6,2].my_inject(1){|result, el| result * el}
+#res3 = ["ant", "bear", "cat"].my_map{|l| l = l + "y"}
 puts ""
 print res1
 puts ""
 print res2
 puts ""
-print res3
-puts ""
+#print res3
+#puts ""
+multiply_els([1,2,5,6,2])
