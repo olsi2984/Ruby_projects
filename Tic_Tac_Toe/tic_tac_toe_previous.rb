@@ -1,9 +1,10 @@
 class Game
   
-  @@message = "It's a tie" # updated from check_winner
+  @@message = "It's a tie"
   
-  def initalize(board)
+  def initalize(board, tot_counter)
     @board = board
+    @tot_counter = tot_counter
   end
 
   def show_board(board)
@@ -14,71 +15,41 @@ class Game
     puts row3 = "#{board[6]}"" | ""#{board[7]}"" | ""#{board[8]}"
   end
 
-  def valid_move?(board, p)
-    if p.between?(1, 9) == false
-      puts "Please type a valid input"
-      false
-    elsif board[p-1] != " "
-      puts "Sorry that cell is taken"
-      false
-    else
-      true
-    end
+  def p1_turn(board)
+    puts "Player 1 please type a number from 1 to 9 where do you want to put your x"
+    p = gets.chomp.to_i
+    puts "Please type a valid input" if p.between?(1, 9) == false
+    puts "Sorry that cell is taken" if board[p-1] != " "
+    board[p-1] = "x" if p.between?(1, 9) && board[p-1] == " "
+    show_board(board) 
   end
 
-  def taken_cells(board)
-    taken = 0
-    board.each do |n|
-      if n == "x" || n == "o"
-        taken +=1
-      end
-    end
-    return taken
+  def p2_turn(board)
+    puts "Player 2 please type a number from 1 to 9 where do you want to put your o"
+    p = gets.chomp.to_i
+    puts "Please type a valid input" if p.between?(1, 9) == false
+    puts "Sorry that cell is taken" if board[p-1] == " "
+    board[p-1] = "o" if p.between?(1, 9) && board[p-1] == " "
+    show_board(board)
   end
 
-  def current_player(board)
-    player = nil
-    if taken_cells(board) % 2 == 0
-      player = "Player 1"
-    else
-      player = "Player 2"
-    end
-    return player
-  end
-
-  def put_mark(board, p)
-    if current_player(board) === "Player 1"
-      board[p-1] = "x"
-    else
-      board[p-1] = "o"
-    end
-  end
-
-  def position
-    p = nil
-  end
-
-  def turn(board)
-    puts "#{current_player(board)} please type a number from 1 to 9 where do you want to put your mark"
-      p = gets.chomp.to_i
-      if valid_move?(board, p)
-        put_mark(board, p)
-        show_board(board)
-      else
-        turn(board)
-      end
-  end
-  
   def play_game(board) 
-
-    until
-      taken_cells(board) == 9
-      turn(board)
+    
+    tot_counter = 0  
+    while tot_counter <= 7
+      p1_turn(board) 
       check_winner(board)
       return if @@message == "Player 1 wins" || @@message == "Player 2 wins"
+      p2_turn(board)
+      check_winner(board) 
+      return if @@message == "Player 1 wins" || @@message == "Player 2 wins"
+      tot_counter += 2  
+    end  
+    p1_turn(board)
+    check_winner(board)
+    if @@message == "It's a tie" 
+      puts @@message 
     end
-    puts @@message
-    
   end
 
   def check_winner(board)   
